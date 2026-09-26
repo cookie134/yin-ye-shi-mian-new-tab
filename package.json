@@ -1,0 +1,19 @@
+{
+  "name": "yin-ye-shi-mian-new-tab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "test:reminders": "node tests/reminder-smoke.cjs",
+    "test:home": "node tests/home-smoke.cjs",
+    "test:snippets": "node tests/snippet-queue-smoke.cjs",
+    "test:background": "node tests/background-and-folders.cjs",
+    "test:provider": "node tests/provider-star.cjs"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}
+

@@ -1,0 +1,10 @@
+node_modules/
+
+tmp/
+output/
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

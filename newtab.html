@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>因夜失眠标签页</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="backgroundStage" class="background-stage" aria-hidden="true">
+      <div id="backgroundLayerA" class="background-layer"></div>
+      <div id="backgroundLayerB" class="background-layer"></div>
+    </div>
+    <div id="app" class="app-shell">
+      <main class="home-view" aria-label="新标签页">
+        <section class="hero-block" aria-label="时间与搜索">
+          <button id="timeSettingsButton" class="time-settings-button" type="button" title="打开设置" aria-label="打开设置">
+            <time id="timeText" class="time-text">--:--</time>
+          </button>
+          <div id="dateText" class="date-text">正在读取日期</div>
+          <div id="enginePicker" class="engine-picker">
+            <button id="engineToggleButton" class="engine-toggle" type="button" aria-expanded="false" aria-controls="enginePopover">
+              <span id="engineNameText">必应</span><span class="dropdown-chevron" aria-hidden="true"></span>
+            </button>
+            <div id="enginePopover" class="engine-popover" aria-hidden="true">
+              <p class="engine-popover-title">选择搜索引擎</p>
+              <div id="engineChoices" class="engine-choices"></div>
+              <div id="customEngineList" class="engine-custom-list"></div>
+              <div class="engine-custom-form">
+                <strong>自定义搜索引擎</strong>
+                <input id="engineNameInput" class="text-field" type="text" placeholder="名称，例如：我的搜索">
+                <input id="engineTemplateInput" class="text-field" type="url" placeholder="https://example.com/?q={query}">
+                <button id="saveEngineButton" class="primary-button compact" type="button">添加并使用</button>
+                <div id="engineStatus" class="status-line" role="status"></div>
+              </div>
+            </div>
+          </div>
+          <form id="searchForm" class="search-form">
+            <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="搜索">
+            <button class="search-button" type="submit">搜索</button>
+          </form>
+          <button id="assistantToggleButton" class="star-entry" type="button" title="打开斯塔（Alt+S）" aria-label="打开斯塔对话工作台，快捷键 Alt+S" aria-keyshortcuts="Alt+S" aria-expanded="false" aria-controls="assistantWidget">✦ <span>斯塔</span></button>
+          <button id="dailyFactText" class="daily-insight" type="button" title="双击与斯塔聊聊并查看出处">“行到水穷处，坐看云起时。” · 王维《终南别业》</button>
+          <p id="upcomingReminderText" class="daily-insight upcoming-insight" role="status" hidden></p>
+        </section>
+
+        <div id="stickyNotesLayer" class="sticky-notes-layer" aria-label="页面便签"></div>
+
+        <section id="noteOrganizer" class="note-organizer collapsed" aria-label="便签收纳">
+          <div class="note-organizer-header">
+            <button id="toggleOrganizerButton" class="organizer-toggle" type="button" aria-label="展开便签收纳" aria-expanded="false">
+              <span class="organizer-brand"><span class="organizer-brand-mark" aria-hidden="true">✧</span><span>便签</span><small id="organizerNoteCount">0</small></span>
+              <span class="dropdown-chevron" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div id="noteOrganizerGrid" class="note-organizer-grid"></div>
+          <button id="addOrganizerBoxButton" class="organizer-add-box" type="button">+ 新建收纳箱</button>
+        </section>
+
+        <nav class="dock" aria-label="收藏与便签">
+          <div id="shortcutGrid" class="shortcut-grid"></div>
+          <button id="addStickyNoteButton" class="dock-button" type="button" title="新建便签" aria-label="新建便签">✎</button>
+        </nav>
+        <div id="shortcutTrash" class="shortcut-trash" aria-label="删除收藏">删除</div>
+        <div id="shortcutGroupHint" class="shortcut-group-hint" role="status" aria-live="polite"></div>
+        <div id="shortcutFolderPopover" class="shortcut-folder-popover" aria-hidden="true" inert></div>
+        <div id="shortcutFolderMenu" class="shortcut-folder-menu" role="menu" aria-hidden="true" inert></div>
+      </main>
+
+      <section id="assistantWidget" class="assistant-workspace" aria-label="斯塔对话工作台" aria-hidden="true" inert>
+        <div id="assistantBackdrop" class="assistant-backdrop"></div>
+        <div id="assistantPanel" class="assistant-panel" role="dialog" aria-modal="true" aria-labelledby="assistantHeading" tabindex="-1">
+          <aside id="chatSidebar" class="chat-sidebar">
+            <div class="chat-sidebar-heading">
+              <div class="chat-brand"><span class="chat-brand-mark">✦</span><span>斯塔 · Star</span></div>
+              <button id="newChatButton" class="chat-new-button" type="button">＋ 新对话</button>
+            </div>
+            <label class="visually-hidden" for="chatThreadSearch">搜索对话</label>
+            <input id="chatThreadSearch" class="chat-thread-search" type="search" placeholder="搜索对话" autocomplete="off">
+            <nav id="chatThreadList" class="chat-thread-list" aria-label="对话列表"></nav>
+            <p class="chat-sidebar-foot">想法在这里开始，便签留在页面上。</p>
+          </aside>
+          <div class="chat-main">
+            <header class="assistant-header">
+              <button id="mobileThreadButton" class="chat-header-button mobile-thread-button" type="button" aria-label="显示对话列表" aria-expanded="false">☰</button>
+              <div class="chat-current-heading">
+                <h2 id="assistantHeading">新对话</h2>
+                <span id="chatModeLabel" class="chat-mode-label">记便签</span>
+              </div>
+              <input id="chatTitleInput" class="chat-title-input" type="text" maxlength="24" aria-label="对话名称" hidden>
+              <button id="saveChatTitleButton" class="chat-header-button" type="button" hidden>保存</button>
+              <button id="cancelChatTitleButton" class="chat-header-button" type="button" hidden>取消</button>
+              <div class="chat-header-menu-wrap">
+                <button id="chatMenuButton" class="chat-header-button" type="button" aria-label="对话选项" aria-expanded="false" aria-controls="chatMenu">···</button>
+                <div id="chatMenu" class="chat-header-menu" hidden>
+                  <button id="renameChatButton" type="button">重命名对话</button>
+                  <button id="deleteChatButton" type="button">删除对话</button>
+                </div>
+              </div>
+              <button id="closeAssistantButton" class="chat-header-button close" type="button" aria-label="关闭对话工作台">×</button>
+            </header>
+            <div id="chatLog" class="chat-log" role="log" aria-live="polite" aria-label="当前对话"></div>
+            <div class="chat-composer">
+              <div class="chat-composer-heading">
+                <strong id="chatComposerMode">记便签</strong>
+                <span id="chatComposerHint">内容会保存为页面便签</span>
+              </div>
+              <form id="chatForm" class="chat-form">
+                <textarea id="chatInput" rows="2" placeholder="写下想记住的事…"></textarea>
+                <button class="send-button" type="submit">保存</button>
+              </form>
+              <div class="chat-attachments"><label class="chat-attach-button">＋ 图片<input id="chatImageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" multiple></label><button id="chatApiKeyToggleButton" class="chat-attach-button chat-api-key-toggle" type="button">连接 API</button><div id="chatImageList" class="chat-image-list" aria-live="polite"></div></div>
+              <div id="chatApiKeyRow" class="chat-api-key-row" hidden><input id="chatApiKeyInput" type="password" autocomplete="off" placeholder="在本机保存 API Key，不发送到对话" aria-label="API Key"><button id="chatApiKeySaveButton" type="button">保存密钥</button></div>
+              <div id="assistantStatus" class="assistant-status" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside id="settingsDrawer" class="settings-drawer" aria-label="设置面板" aria-hidden="true">
+        <div class="drawer-header">
+          <h1>设置</h1>
+          <button id="closeSettingsButton" class="icon-button" type="button" title="关闭设置" aria-label="关闭设置">×</button>
+        </div>
+
+        <div class="drawer-content">
+          <section class="panel">
+            <div class="panel-header"><h2>斯塔 · Star</h2></div>
+            <p class="help-text">选择服务并填入自己的 API Key。斯塔会在合适的时候提醒你，也能陪你聊聊。</p>
+            <div class="settings-grid">
+              <label><span>服务</span>
+                <select id="providerSelect" class="text-field">
+                  <option value="deepseek">DeepSeek</option>
+                  <option value="openai">OpenAI（ChatGPT）</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="groq">Groq</option>
+                  <option value="openrouter">OpenRouter</option>
+                  <option value="openai-compatible">自定义兼容接口</option>
+                </select>
+              </label>
+              <label><span>接口地址</span><input id="baseUrlInput" class="text-field" type="url" spellcheck="false"></label>
+              <label><span>API Key</span><input id="apiKeyInput" class="text-field" type="password" autocomplete="off" spellcheck="false" placeholder="仅保存在本机扩展存储"></label>
+              <div class="model-picker">
+                <div class="model-picker-heading"><span>模型</span><button id="refreshModelsButton" class="model-refresh-button" type="button">刷新列表</button></div>
+                <input id="modelSearchInput" class="text-field" type="search" autocomplete="off" placeholder="搜索模型名称">
+                <select id="modelSelect" class="text-field" aria-label="选择模型"></select>
+                <input id="customModelInput" class="text-field" type="text" spellcheck="false" placeholder="自定义模型 ID" aria-label="自定义模型 ID" hidden>
+                <p id="modelFetchStatus" class="help-text" role="status">输入 API Key 后可读取当前服务的模型列表。</p>
+              </div>
+              <label><span>单次提醒后删除便签</span>
+                <select id="oneTimeNoteRetentionSelect" class="text-field">
+                  <option value="0">提醒后立即</option>
+                  <option value="3600000">提醒后 1 小时</option>
+                  <option value="18000000">提醒后 5 小时</option>
+                  <option value="86400000">提醒后 24 小时</option>
+                </select>
+              </label>
+            </div>
+            <p class="help-text">仅影响之后创建的单次提醒；若指定了删除时间，优先按指定时间。每日提醒默认保留。</p>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><h2>提醒通知</h2></div>
+            <p id="reminderHealth" class="help-text" role="status">打开设置时检查通知权限与闹钟状态。</p>
+            <div class="reminder-check-actions">
+              <button id="testReminderButton" class="secondary-button" type="button">测试通知</button>
+              <button id="repairReminderButton" class="secondary-button" type="button">重新注册</button>
+            </div>
+            <p class="help-text">测试会立即发一条通知，约 1 分钟后再由后台闹钟发一条。Edge 接受请求后，系统免打扰仍可能阻止弹窗。</p>
+            <div id="reminderCheckStatus" class="status-line" role="status"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><h2>页面外观</h2></div>
+            <p class="help-text">可以使用必应每日壁纸、单张网络图片，或从本地导入图片组成图库。GIF、WebP、APNG 会保持动画。</p>
+            <div class="settings-grid">
+              <label><span>背景颜色</span><input id="backgroundColorInput" class="color-field" type="color"></label>
+              <label><span>主页文字颜色</span><input id="homeTextColorInput" class="color-field" type="color"></label>
+              <label><span>文字对比度</span><select id="homeTextContrastSelect" class="text-field"><option value="none">无描边</option><option value="soft">柔和描边</option><option value="strong">清晰描边</option></select></label>
+              <label><span>背景来源</span><select id="backgroundModeSelect" class="text-field"><option value="bing">必应每日壁纸</option><option value="url">单张网络图片</option><option value="gallery">我的图库</option><option value="color">纯背景颜色</option></select></label>
+              <label><span>背景图片 URL</span><input id="backgroundImageInput" class="text-field" type="url" spellcheck="false" placeholder="https://..."></label>
+              <div class="background-import-actions">
+                <label class="file-button">导入文件夹<input id="backgroundFolderInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" webkitdirectory multiple></label>
+                <label class="file-button">导入图片<input id="backgroundFilesInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" multiple></label>
+                <button id="addBackgroundUrlButton" class="secondary-button" type="button">将 URL 加入图库</button>
+              </div>
+              <div id="backgroundGalleryList" class="background-gallery-list" aria-label="背景图库"></div>
+              <label><span>轮播间隔（秒，0 为关闭）</span><input id="slideshowSecondsInput" class="text-field" type="number" min="0" max="3600" step="1" value="30"></label>
+              <label class="background-check"><input id="shuffleBackgroundsInput" type="checkbox"><span>随机选图</span></label>
+              <label class="background-check"><input id="wheelBackgroundsInput" type="checkbox"><span>在主页用滚轮切图</span></label>
+              <label><span>自动轮播动画</span><select id="slideshowEffectSelect" class="text-field"><option value="fade">淡入淡出</option><option value="slide">平移</option><option value="zoom">缩放</option><option value="none">无动画</option></select></label>
+              <label><span>滚轮切图动画</span><select id="wheelEffectSelect" class="text-field"><option value="fade">淡入淡出</option><option value="slide">平移</option><option value="zoom">缩放</option><option value="none">无动画</option></select></label>
+              <label><span>纯背景模式等待（秒）</span><input id="idleTimeoutInput" class="text-field" type="number" min="0" max="3600" step="1" inputmode="numeric" value="30"></label>
+              <label class="background-check"><input id="showNoteOrganizerInput" type="checkbox"><span>显示左上角便签收纳</span></label>
+            </div>
+            <p class="help-text">本地图片以快照方式保存在此浏览器的扩展数据中；配置导出不包含图片文件，换设备后请重新导入。</p>
+            <p class="help-text">默认 30 秒；输入 0 可关闭。按任意键或移动鼠标恢复页面。</p>
+          </section>
+          <div class="settings-actions">
+            <button id="saveSettingsButton" class="primary-button" type="button">保存设置</button>
+            <button id="exportButton" class="secondary-button" type="button">导出配置</button>
+            <label class="file-button">导入配置<input id="importInput" type="file" accept="application/json"></label>
+          </div>
+          <div id="settingsStatus" class="status-line" role="status"></div>
+        </div>
+      </aside>
+    </div>
+
+    <dialog id="shortcutDialog" class="dialog">
+      <form id="shortcutForm" method="dialog">
+        <h2>添加收藏</h2>
+        <label>
+          <span>名称</span>
+          <input id="shortcutNameInput" class="text-field" type="text" required>
+        </label>
+        <label>
+          <span>网址</span>
+          <input id="shortcutUrlInput" class="text-field" type="url" required>
+        </label>
+        <div class="dialog-actions">
+          <button id="cancelShortcutButton" class="secondary-button" type="button">取消</button>
+          <button class="primary-button" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="dist/app.js"></script>
+  </body>
+</html>
